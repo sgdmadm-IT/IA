@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job>
+  <name>PR_GVF_SEAT</name>
+  <description>Control Flow SSIS du package PR_GVF_SEAT.</description>
+  <extended_description />
+  <job_version />
+  <directory>/</directory>
+  <created_user>-</created_user>
+  <created_date>2026/01/01 00:00:00.000</created_date>
+  <modified_user>-</modified_user>
+  <modified_date>2026/01/01 00:00:00.000</modified_date>
+  <parameters>
+    <parameter>
+      <name>BASE_DIR</name>
+      <default_value />
+      <description>Repertoire de base (a adapter a l'environnement)</description>
+    </parameter>
+  </parameters>
+  <slaveservers />
+  <connection>
+    <name>10.20.210.161.INFOCENTRE SGDM</name>
+    <server>10.20.210.161</server>
+    <type>MSSQLNATIVE</type>
+    <access>Native</access>
+    <database>INFOCENTRE SGDM</database>
+    <port>1433</port>
+    <username />
+    <password />
+    <servername />
+    <data_tablespace />
+    <index_tablespace />
+    <attributes>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1433</attribute>
+      </attribute>
+      <attribute>
+        <code>MSSQLUseIntegratedSecurity</code>
+        <attribute>true</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <job-log-table>
+    <connection />
+    <schema />
+    <table />
+    <size_limit_lines />
+    <interval />
+    <timeout_days />
+  </job-log-table>
+  <jobentries>
+    <entry>
+      <name>START</name>
+      <description />
+      <type>SPECIAL</type>
+      <start>Y</start>
+      <dummy>N</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <intervalSeconds>0</intervalSeconds>
+      <intervalMinutes>60</intervalMinutes>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>64</xloc>
+      <yloc>64</yloc>
+    </entry>
+    <entry>
+      <name>Copie du fichier à intégrer dans le répertoire attendu par I'COM SEAT</name>
+      <description>File System Task SSIS (MoveFile)</description>
+      <type>MOVE_FILES</type>
+      <move_empty_folders>Y</move_empty_folders>
+      <arg_from_previous>N</arg_from_previous>
+      <include_subfolders>N</include_subfolders>
+      <add_result_filesname>N</add_result_filesname>
+      <destination_is_a_file>Y</destination_is_a_file>
+      <create_destination_folder>N</create_destination_folder>
+      <overwrite_files>Y</overwrite_files>
+      <simulate>N</simulate>
+      <fields>
+        <field>
+          <source_filefolder>\\10.10.10.8\sgdm\ICAR\SEAT\PR\Acknow\ESPAGNE\I6458.CSV</source_filefolder>
+          <destination_filefolder>\\10.10.10.8\societes\SGDM\ICAR\SEAT\PR\Acknow\ESPAGNE\A INTEGRER\I6458.csv</destination_filefolder>
+          <wildcard />
+        </field>
+      </fields>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>240</xloc>
+      <yloc>64</yloc>
+    </entry>
+    <entry>
+      <name>ENVOI FICHIER POUR CONTROLE</name>
+      <description>Send Mail Task SSIS</description>
+      <type>MAIL</type>
+      <server />
+      <port>25</port>
+      <destination>betty.dier@gbh.fr</destination>
+      <destinationCc>patrice.sannier@gbh.fr</destinationCc>
+      <destinationBCc />
+      <replyto>acknow_PR_SGDM@gbh.fr</replyto>
+      <replyToName />
+      <subject>Fichier controle Acknow PR SEAT ESPAGNE</subject>
+      <include_date>N</include_date>
+      <contact_person />
+      <contact_phone />
+      <comment />
+      <encoding>UTF-8</encoding>
+      <priority>normal</priority>
+      <importance>normal</importance>
+      <sensitivity>normal</sensitivity>
+      <useAuth>N</useAuth>
+      <usexoauth2>N</usexoauth2>
+      <useSecAuth>N</useSecAuth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>416</xloc>
+      <yloc>64</yloc>
+    </entry>
+    <entry>
+      <name>RAJOUT DATE CMDE</name>
+      <description>Data Flow SSIS 'RAJOUT DATE CMDE'</description>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id />
+      <filename>${Internal.Entry.Current.Directory}/PR_SEAT_ESPAGNE_RAJOUT_DATE_CMDE.ktr</filename>
+      <transname />
+      <directory />
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile />
+      <logext />
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name />
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <run_configuration />
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>64</yloc>
+    </entry>
+    <entry>
+      <name>RECUPERATION ARTICLES</name>
+      <description>Data Flow SSIS 'RECUPERATION ARTICLES'</description>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id />
+      <filename>${Internal.Entry.Current.Directory}/PR_SEAT_ESPAGNE_RECUPERATION_ARTICLES.ktr</filename>
+      <transname />
+      <directory />
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile />
+      <logext />
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name />
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <run_configuration />
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>768</xloc>
+      <yloc>64</yloc>
+    </entry>
+    <entry>
+      <name>RECUPERATION DATE</name>
+      <description>Data Flow SSIS 'RECUPERATION DATE'</description>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id />
+      <filename>${Internal.Entry.Current.Directory}/PR_SEAT_ESPAGNE_RECUPERATION_DATE.ktr</filename>
+      <transname />
+      <directory />
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile />
+      <logext />
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name />
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <run_configuration />
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>944</xloc>
+      <yloc>64</yloc>
+    </entry>
+    <entry>
+      <name>Suppression du fichier Acknow PR Initial SEAT</name>
+      <description>File System Task SSIS (DeleteFile)</description>
+      <type>DELETE_FILES</type>
+      <arg_from_previous>N</arg_from_previous>
+      <include_subfolders>N</include_subfolders>
+      <fields>
+        <field>
+          <name>C:\fichiers\ACKNOW\PR\GVF\Source\I6458</name>
+          <filemask />
+        </field>
+      </fields>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1120</xloc>
+      <yloc>64</yloc>
+    </entry>
+    <entry>
+      <name>Test présence du fichier SEAT</name>
+      <description>NON CONVERTI : Script Task VisualBasic</description>
+      <type>DUMMY</type>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1296</xloc>
+      <yloc>64</yloc>
+    </entry>
+    <entry>
+      <name>Tâche d'exécution de requêtes SQL</name>
+      <description>Execute SQL Task SSIS</description>
+      <type>SQL</type>
+      <sql>TRUNCATE TABLE [AKCNOW_PR_DATE]
+TRUNCATE TABLE [ACKNOW_PR_ESPAGNE_TEMP]</sql>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename />
+      <sendOneStatement>F</sendOneStatement>
+      <connection>10.20.210.161.INFOCENTRE SGDM</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1472</xloc>
+      <yloc>64</yloc>
+    </entry>
+  </jobentries>
+  <hops>
+    <hop>
+      <from>Copie du fichier à intégrer dans le répertoire attendu par I'COM SEAT</from>
+      <to>Suppression du fichier Acknow PR Initial SEAT</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>RAJOUT DATE CMDE</from>
+      <to>Copie du fichier à intégrer dans le répertoire attendu par I'COM SEAT</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>RECUPERATION ARTICLES</from>
+      <to>RAJOUT DATE CMDE</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>RECUPERATION DATE</from>
+      <to>RECUPERATION ARTICLES</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Test présence du fichier SEAT</from>
+      <to>Tâche d'exécution de requêtes SQL</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Tâche d'exécution de requêtes SQL</from>
+      <to>RECUPERATION DATE</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>Test présence du fichier SEAT</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>ENVOI FICHIER POUR CONTROLE</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+  </hops>
+  <notepads />
+  <attributes />
+</job>

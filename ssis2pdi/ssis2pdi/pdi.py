@@ -44,8 +44,10 @@ def to_string(elem):
 # --------------------------------------------------------------------------
 # Transformation (.ktr)
 # --------------------------------------------------------------------------
-def build_transformation(name, description, steps, hops, params=None, notes=None):
-    """steps : liste d'Element <step>. hops : liste de (from, to)."""
+def build_transformation(name, description, steps, hops, params=None, notes=None,
+                         connections=None):
+    """steps : liste d'Element <step>. hops : liste de (from, to).
+    connections : liste d'Element <connection> (bases de donnees)."""
     info = E("info", [
         ("name", name),
         ("description", description or ""),
@@ -83,7 +85,8 @@ def build_transformation(name, description, steps, hops, params=None, notes=None
 
     trans = E("transformation", [info])
     trans.append(E("notepads", [_notepad(n, i) for i, n in enumerate(notes or [])]))
-    trans.append(E("connection"))
+    for conn in (connections or []):
+        trans.append(conn)
     trans.append(order)
     for s in steps:
         trans.append(s)
@@ -136,7 +139,7 @@ def step_dummy(name, x, y, description=""):
 # --------------------------------------------------------------------------
 # Job (.kjb)
 # --------------------------------------------------------------------------
-def build_job(name, description, entries, hops, params=None):
+def build_job(name, description, entries, hops, params=None, connections=None):
     content = [
         ("name", name),
         ("description", description or ""),
@@ -153,6 +156,8 @@ def build_job(name, description, entries, hops, params=None):
         ("slaveservers", None),
     ]
     job = E("job", content)
+    for conn in (connections or []):
+        job.append(conn)
     job.append(E("job-log-table", [
         ("connection", None), ("schema", None), ("table", None),
         ("size_limit_lines", None), ("interval", None), ("timeout_days", None)]))

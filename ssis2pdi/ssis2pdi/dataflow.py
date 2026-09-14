@@ -3,6 +3,7 @@ import os
 import re
 
 from . import pdi
+from . import db
 from .common import ssis_type_to_pdi, translate_expression, is_string_literal
 
 _BRACKET = re.compile(r"\[([^\]]+)\]")
@@ -235,12 +236,148 @@ def h_flatfile_destination(comp, package, x):
             "input": name + " (mapping)", "output": None, "notes": []}
 
 
+def h_sort(comp, package, x):
+    name = comp.get("name")
+    inp = comp.find("./inputs/input")
+    keys = []
+    for ic in inp.findall("./inputColumns/inputColumn"):
+        pos = None
+        for p in ic.findall("./properties/property"):
+            if p.get("name") in ("NewSortKeyPosition", "SortKeyPosition"):
+                pos = p.text
+        if pos and pos not in ("0", None):
+            keys.append((abs(int(pos)), int(pos) > 0,
+                         ic.get("cachedName") or _last_bracket(ic.get("lineageId", ""))))
+    keys.sort()
+    fields = [("field", [
+        ("name", n), ("ascending", "Y" if asc else "N"),
+        ("case_sensitive", "N"), ("collator_enabled", "N"),
+        ("collator_strength", 0), ("presorted", "N")]) for _, asc, n in keys]
+    unique = "Y" if (_prop(comp, "EliminateDuplicates") or "false").lower() == "true" else "N"
+    body = [
+        ("directory", "%%java.io.tmpdir%%"), ("prefix", "out"),
+        ("sort_size", "1000000"), ("free_memory", None), ("compress", "N"),
+        ("compress_variable", None), ("unique_rows", unique),
+        ("fields", fields),
+    ]
+    step = pdi.step_wrap(name, "SortRows", body, x, 144, "Tri SSIS")
+    return {"steps": [step], "hops": [], "input": name, "output": name, "notes": []}
+
+
+def h_passthrough(kind, note):
+    def handler(comp, package, x):
+        name = comp.get("name")
+        step = pdi.step_dummy(name, x, 144, note)
+        return {"steps": [step], "hops": [], "input": name, "output": name,
+                "notes": [f"[{name}] {note}"]}
+    return handler
+
+
+def h_conditional_split(comp, package, x):
+    name = comp.get("name")
+    conds = []
+    for out in comp.findall("./outputs/output"):
+        if out.get("isErrorOut") == "true":
+            continue
+        expr = _prop(out, "FriendlyExpression") or _prop(out, "Expression")
+        if expr:
+            conds.append(f"{out.get('name')} : {expr}")
+    step = pdi.step_dummy(name, x, 144,
+                          "Fractionnement conditionnel SSIS -> a recreer avec "
+                          "'Filter rows' / 'Switch-Case' (routage non reproduit)")
+    notes = [f"[{name}] ConditionalSplit non route automatiquement (etape Dummy). "
+             "Conditions a implementer :"] + [f"[{name}]   - {c}" for c in conds]
+    return {"steps": [step], "hops": [], "input": name, "output": name, "notes": notes}
+
+
+def h_lookup(comp, package, x):
+    name = comp.get("name")
+    sql = _prop(comp, "SqlCommand") or _prop(comp, "SqlCommandParam") or ""
+    step = pdi.step_dummy(name, x, 144,
+                          "Recherche (Lookup) SSIS -> a recreer avec 'Database lookup' "
+                          "ou 'Stream lookup'")
+    notes = [f"[{name}] Lookup non converti (etape Dummy). Requete de reference : "
+             + " ".join(sql.split())[:300]]
+    return {"steps": [step], "hops": [], "input": name, "output": name, "notes": notes}
+
+
+def _table_input(comp, package, x, label):
+    name = comp.get("name")
+    conn = _conn_for(comp, package)
+    sql = _prop(comp, "SqlCommand") or _prop(comp, "SqlCommandParam") or ""
+    meta = db.parse_db(conn) if conn else None
+    body = [
+        ("connection", conn.name if conn else ""),
+        ("sql", sql), ("limit", 0), ("lookup", None),
+        ("execute_each_row", "N"), ("variables_active", "N"),
+        ("lazy_conversion_active", "N"), ("cached_row_meta_active", "N"),
+    ]
+    step = pdi.step_wrap(name, "TableInput", body, x, 144, label)
+    notes = []
+    if meta:
+        notes.append(f"[{name}] connexion BD '{meta['name']}' ({meta['type']}) : {meta['note']}")
+    return {"steps": [step], "hops": [], "input": None, "output": name,
+            "notes": notes, "db": meta}
+
+
+def h_oledb_source(comp, package, x):
+    return _table_input(comp, package, x, "Source OLE DB SSIS -> Table input")
+
+
+def h_managed_host(comp, package, x):
+    # ManagedComponentHost enveloppe souvent une source ADO.NET (SqlCommand + connexion)
+    if _conn_for(comp, package) and (_prop(comp, "SqlCommand") or _prop(comp, "SqlCommandParam")):
+        return _table_input(comp, package, x, "Source ADO.NET SSIS -> Table input")
+    name = comp.get("name")
+    step = pdi.step_dummy(name, x, 144,
+                          "Composant manage SSIS non identifie -> a implementer")
+    return {"steps": [step], "hops": [], "input": name, "output": name,
+            "notes": [f"[{name}] ManagedComponentHost non reconnu (etape Dummy)"]}
+
+
+def h_oledb_destination(comp, package, x):
+    name = comp.get("name")
+    conn = _conn_for(comp, package)
+    meta = db.parse_db(conn) if conn else None
+    table = (_prop(comp, "OpenRowset") or "").strip("[]")
+    body = [
+        ("connection", conn.name if conn else ""),
+        ("schema", None), ("table", table), ("commit", 1000),
+        ("truncate", "N"), ("ignore_errors", "N"), ("use_batch", "Y"),
+        ("specify_fields", "N"),
+        ("partitioning_enabled", "N"), ("partitioning_field", None),
+        ("partitioning_daily", "N"), ("partitioning_monthly", "Y"),
+        ("tablename_in_field", "N"), ("tablename_field", None),
+        ("tablename_in_table", "Y"), ("return_keys", "N"), ("return_field", None),
+        ("fields", None),
+    ]
+    step = pdi.step_wrap(name, "TableOutput", body, x, 144,
+                         "Destination OLE DB SSIS -> Table output (table " + table + ")")
+    notes = []
+    if meta:
+        notes.append(f"[{name}] connexion BD '{meta['name']}' ({meta['type']}) : {meta['note']}")
+    return {"steps": [step], "hops": [], "input": name, "output": None,
+            "notes": notes, "db": meta}
+
+
 HANDLERS = {
     "Microsoft.ExcelSource": h_excel_source,
     "Microsoft.FlatFileSource": h_flatfile_source,
     "Microsoft.DataConvert": h_data_convert,
     "Microsoft.DerivedColumn": h_derived_column,
     "Microsoft.FlatFileDestination": h_flatfile_destination,
+    "Microsoft.Sort": h_sort,
+    "Microsoft.Multicast": h_passthrough(
+        "Multicast", "Multicast SSIS -> Dummy (relier chaque sortie ; option 'copier "
+        "les donnees' sur les hops sortants)"),
+    "Microsoft.UnionAll": h_passthrough(
+        "UnionAll", "Union All SSIS -> Dummy (les flux entrants sont fusionnes ; "
+        "verifier la correspondance des champs)"),
+    "Microsoft.ConditionalSplit": h_conditional_split,
+    "Microsoft.Lookup": h_lookup,
+    "Microsoft.OLEDBSource": h_oledb_source,
+    "Microsoft.OLEDBDestination": h_oledb_destination,
+    "Microsoft.ManagedComponentHost": h_managed_host,
 }
 
 
@@ -259,6 +396,7 @@ def build_dataflow(pipeline_exec, package, ktr_name):
     comps = pipeline.findall("./components/component")
     steps, hops, notes = [], [], []
     io = {}   # component refId -> (input_step, output_step)
+    db_conns = {}   # nom -> meta (dedoublonne)
 
     for i, comp in enumerate(comps):
         cls = comp.get("componentClassID")
@@ -268,6 +406,8 @@ def build_dataflow(pipeline_exec, package, ktr_name):
         hops.extend(res["hops"])
         notes.extend(res["notes"])
         io[comp.get("refId")] = (res["input"], res["output"])
+        if res.get("db"):
+            db_conns[res["db"]["name"]] = res["db"]
 
     for path in pipeline.findall("./paths/path"):
         start = path.get("startId", "").split(".Outputs")[0]
@@ -281,9 +421,10 @@ def build_dataflow(pipeline_exec, package, ktr_name):
         {"name": "SOURCE_DIR", "default": "",
          "desc": "Repertoire source (a adapter)"},
     ]
+    connections = [db.build_connection_element(m) for m in db_conns.values()]
     trans = pdi.build_transformation(
         ktr_name, f"Data Flow SSIS '{pipeline_exec.name}' (package {package.name}).",
-        steps, hops, params=params,
+        steps, hops, params=params, connections=connections,
         notes=[f"Converti automatiquement depuis {os.path.basename(package.path)} "
                f"(Data Flow '{pipeline_exec.name}'). Verifier dans Spoon."])
     return trans, notes

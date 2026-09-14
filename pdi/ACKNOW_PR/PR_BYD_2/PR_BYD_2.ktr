@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>PR_BYD_2</name>
+    <description>Data Flow SSIS 'BYD' (package PR_BYD_2).</description>
+    <extended_description />
+    <trans_version />
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters>
+      <parameter>
+        <name>SOURCE_DIR</name>
+        <default_value />
+        <description>Repertoire source (a adapter)</description>
+      </parameter>
+    </parameters>
+    <log />
+    <maxdate>
+      <connection />
+      <table />
+      <field />
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file />
+    <capture_step_performance>N</capture_step_performance>
+    <dependencies />
+    <partitionschemas />
+    <slaveservers />
+    <clusterschemas />
+    <created_user>-</created_user>
+    <created_date>2026/01/01 00:00:00.000</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2026/01/01 00:00:00.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Converti automatiquement depuis PR_BYD_2.dtsx (Data Flow 'BYD'). Verifier dans Spoon.</note>
+      <xloc>20</xloc>
+      <yloc>20</yloc>
+      <width>420</width>
+      <heigth>70</heigth>
+      <fontname>Segoe UI</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>14</fontcolorred>
+      <fontcolorgreen>58</fontcolorgreen>
+      <fontcolorblue>90</fontcolorblue>
+      <backgroundcolorred>201</backgroundcolorred>
+      <backgroundcolorgreen>232</backgroundcolorgreen>
+      <backgroundcolorblue>251</backgroundcolorblue>
+      <bordercolorred>14</bordercolorred>
+      <bordercolorgreen>58</bordercolorgreen>
+      <bordercolorblue>90</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+  </notepads>
+  <order>
+    <hop>
+      <from>BYD (mapping)</from>
+      <to>BYD</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Colonne dérivée</from>
+      <to>BYD (mapping)</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Conversion de données</from>
+      <to>Colonne dérivée</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Source BYD</from>
+      <to>Conversion de données</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <step>
+    <name>BYD (mapping)</name>
+    <type>SelectValues</type>
+    <description>Mapping flux -&gt; colonnes du fichier de sortie</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <fields>
+      <field>
+        <name>DEVISE</name>
+        <rename>DEVISE</rename>
+      </field>
+      <field>
+        <name>Copie de DATE FACT</name>
+        <rename>DATE_BL</rename>
+      </field>
+      <field>
+        <name>Copie de Quantité facturée</name>
+        <rename>QTE_LIVREE</rename>
+      </field>
+      <field>
+        <name>Copie de cmde SGDM</name>
+        <rename>NUM_COMMANDE</rename>
+      </field>
+      <field>
+        <name>Copie de BL</name>
+        <rename>NUMERO_BL</rename>
+      </field>
+      <field>
+        <name>TYPE_COMMANDE</name>
+        <rename>TYPE_COMMANDE</rename>
+      </field>
+      <field>
+        <name>Référence</name>
+        <rename>REFERENCE LIVREE</rename>
+      </field>
+      <field>
+        <name>Valeur unitaire</name>
+        <rename>PX_ACHAT_UNITAIRE</rename>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>150</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>BYD</name>
+    <type>TextFileOutput</type>
+    <description>Destination fichier plat SSIS -&gt; \\10.10.10.8\SGDM\ICAR\BYD\PR\Acknow\France\byd.csv</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <separator>;</separator>
+    <enclosure />
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>Y</enclosure_fix_disabled>
+    <header>Y</header>
+    <footer>N</footer>
+    <format>CRLF</format>
+    <compression>None</compression>
+    <encoding>Windows-1252</encoding>
+    <endedLine />
+    <fileNameInField>N</fileNameInField>
+    <fileNameField />
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name>\\10.10.10.8\SGDM\ICAR\BYD\PR\Acknow\France\byd</name>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>N</do_not_open_new_file_init>
+      <extention>csv</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format />
+      <add_to_result_filenames>Y</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>N</fast_dump>
+      <splitevery>0</splitevery>
+    </file>
+    <fields>
+      <field>
+        <name>NUMERO_BL</name>
+        <type>Integer</type>
+        <format>#</format>
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>DATE_BL</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>8</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>TYPE_COMMANDE</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>REFERENCE LIVREE</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>22</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>QTE_LIVREE</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>7</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>PX_ACHAT_UNITAIRE</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>9</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>DEVISE</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>3</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>NUM_COMMANDE</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>5</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>320</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Colonne dérivée</name>
+    <type>Formula</type>
+    <description>Colonne derivee SSIS -&gt; Formula (verifier les expressions)</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <formula>
+      <formula>
+        <field_name>DEVISE</field_name>
+        <formula_string>"EUR"</formula_string>
+        <value_type>String</value_type>
+        <value_length>3</value_length>
+        <value_precision>-1</value_precision>
+        <replace_field />
+      </formula>
+      <formula>
+        <field_name>TYPE_COMMANDE</field_name>
+        <formula_string>"A"</formula_string>
+        <value_type>String</value_type>
+        <value_length>1</value_length>
+        <value_precision>-1</value_precision>
+        <replace_field />
+      </formula>
+    </formula>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>350</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Conversion de données</name>
+    <type>SelectValues</type>
+    <description>Conversion de donnees SSIS (typage/renommage)</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <fields>
+      <select_unspecified>N</select_unspecified>
+      <meta>
+        <field>
+          <name>BL </name>
+          <rename>Copie de BL</rename>
+          <type>String</type>
+          <length>255</length>
+          <precision>-2</precision>
+          <conversion_mask />
+          <date_format_lenient>false</date_format_lenient>
+          <date_format_locale />
+          <date_format_timezone />
+          <lenient_string_to_number>false</lenient_string_to_number>
+          <encoding />
+          <decimal_symbol />
+          <grouping_symbol />
+          <currency_symbol />
+          <storage_type />
+        </field>
+        <field>
+          <name>DATE FACT</name>
+          <rename>Copie de DATE FACT</rename>
+          <type>String</type>
+          <length>50</length>
+          <precision>-2</precision>
+          <conversion_mask />
+          <date_format_lenient>false</date_format_lenient>
+          <date_format_locale />
+          <date_format_timezone />
+          <lenient_string_to_number>false</lenient_string_to_number>
+          <encoding />
+          <decimal_symbol />
+          <grouping_symbol />
+          <currency_symbol />
+          <storage_type />
+        </field>
+        <field>
+          <name>Quantité facturée</name>
+          <rename>Copie de Quantité facturée</rename>
+          <type>String</type>
+          <length>50</length>
+          <precision>-2</precision>
+          <conversion_mask />
+          <date_format_lenient>false</date_format_lenient>
+          <date_format_locale />
+          <date_format_timezone />
+          <lenient_string_to_number>false</lenient_string_to_number>
+          <encoding />
+          <decimal_symbol />
+          <grouping_symbol />
+          <currency_symbol />
+          <storage_type />
+        </field>
+        <field>
+          <name>Valeur unitaire</name>
+          <rename>Copie de Valeur unitaire</rename>
+          <type>String</type>
+          <length>50</length>
+          <precision>-2</precision>
+          <conversion_mask />
+          <date_format_lenient>false</date_format_lenient>
+          <date_format_locale />
+          <date_format_timezone />
+          <lenient_string_to_number>false</lenient_string_to_number>
+          <encoding />
+          <decimal_symbol />
+          <grouping_symbol />
+          <currency_symbol />
+          <storage_type />
+        </field>
+        <field>
+          <name>cmde SGDM</name>
+          <rename>Copie de cmde SGDM</rename>
+          <type>String</type>
+          <length>50</length>
+          <precision>-2</precision>
+          <conversion_mask />
+          <date_format_lenient>false</date_format_lenient>
+          <date_format_locale />
+          <date_format_timezone />
+          <lenient_string_to_number>false</lenient_string_to_number>
+          <encoding />
+          <decimal_symbol />
+          <grouping_symbol />
+          <currency_symbol />
+          <storage_type />
+        </field>
+      </meta>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>550</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Source BYD</name>
+    <type>ExcelInput</type>
+    <description>Source Excel SSIS -&gt; C:\fichiers\ACKNOW\PR\GVF\Source\cmde_pdr_byd.xls</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <header>Y</header>
+    <noempty>Y</noempty>
+    <stoponempty>N</stoponempty>
+    <filefield />
+    <sheetfield />
+    <sheetrowsfield />
+    <rownumfield />
+    <sheetfield_len>0</sheetfield_len>
+    <filefield_len>0</filefield_len>
+    <limit>0</limit>
+    <encoding />
+    <add_to_result_filenames>Y</add_to_result_filenames>
+    <accept_filenames>N</accept_filenames>
+    <accept_field />
+    <accept_stepname />
+    <file>
+      <name>C:\fichiers\ACKNOW\PR\GVF\Source\cmde_pdr_byd.xls</name>
+      <filemask />
+      <exclude_filemask />
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>BL </name>
+        <type>String</type>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+      <field>
+        <name>DATE FACT</name>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+      <field>
+        <name>Référence</name>
+        <type>String</type>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+      <field>
+        <name>Quantité facturée</name>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+      <field>
+        <name>Valeur unitaire</name>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+      <field>
+        <name>cmde SGDM</name>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+    </fields>
+    <sheets>
+      <sheet>
+        <name>Feuil1</name>
+        <startrow>0</startrow>
+        <startcol>0</startcol>
+      </sheet>
+    </sheets>
+    <strict_types>N</strict_types>
+    <error_ignored>N</error_ignored>
+    <error_line_skipped>N</error_line_skipped>
+    <spreadsheet_type>JXL</spreadsheet_type>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>750</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step_error_handling />
+  <slave-step-copy-partition-distribution />
+  <slave_transformation>N</slave_transformation>
+</transformation>

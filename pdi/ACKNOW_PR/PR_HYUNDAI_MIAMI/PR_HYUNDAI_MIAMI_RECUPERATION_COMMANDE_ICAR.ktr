@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>PR_HYUNDAI_MIAMI_RECUPERATION_COMMANDE_ICAR</name>
+    <description>Data Flow SSIS 'RECUPERATION COMMANDE ICAR' (package PR_HYUNDAI_MIAMI).</description>
+    <extended_description />
+    <trans_version />
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters>
+      <parameter>
+        <name>SOURCE_DIR</name>
+        <default_value />
+        <description>Repertoire source (a adapter)</description>
+      </parameter>
+    </parameters>
+    <log />
+    <maxdate>
+      <connection />
+      <table />
+      <field />
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file />
+    <capture_step_performance>N</capture_step_performance>
+    <dependencies />
+    <partitionschemas />
+    <slaveservers />
+    <clusterschemas />
+    <created_user>-</created_user>
+    <created_date>2026/01/01 00:00:00.000</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2026/01/01 00:00:00.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Converti automatiquement depuis PR_HYUNDAI_MIAMI.dtsx (Data Flow 'RECUPERATION COMMANDE ICAR'). Verifier dans Spoon.</note>
+      <xloc>20</xloc>
+      <yloc>20</yloc>
+      <width>420</width>
+      <heigth>70</heigth>
+      <fontname>Segoe UI</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>14</fontcolorred>
+      <fontcolorgreen>58</fontcolorgreen>
+      <fontcolorblue>90</fontcolorblue>
+      <backgroundcolorred>201</backgroundcolorred>
+      <backgroundcolorgreen>232</backgroundcolorgreen>
+      <backgroundcolorblue>251</backgroundcolorblue>
+      <bordercolorred>14</bordercolorred>
+      <bordercolorgreen>58</bordercolorgreen>
+      <bordercolorblue>90</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>ICAR SGDM</name>
+    <server>ICARAGSGDM</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>SGDM</database>
+    <port>1521</port>
+    <username>icardms_r</username>
+    <password />
+    <servername />
+    <data_tablespace />
+    <index_tablespace />
+    <attributes>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1521</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>10.20.210.165.INFOCENTRE SGDM</name>
+    <server>10.20.210.165</server>
+    <type>MSSQLNATIVE</type>
+    <access>Native</access>
+    <database>INFOCENTRE SGDM</database>
+    <port>1433</port>
+    <username />
+    <password />
+    <servername />
+    <data_tablespace />
+    <index_tablespace />
+    <attributes>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1433</attribute>
+      </attribute>
+      <attribute>
+        <code>MSSQLUseIntegratedSecurity</code>
+        <attribute>true</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <order>
+    <hop>
+      <from>Conversion de données</from>
+      <to>Table_Num_Cmde_PR_ICAR</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Source ADO NET</from>
+      <to>Conversion de données</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <step>
+    <name>Conversion de données</name>
+    <type>SelectValues</type>
+    <description>Conversion de donnees SSIS (typage/renommage)</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <fields>
+      <select_unspecified>N</select_unspecified>
+      <meta />
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>150</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Source ADO NET</name>
+    <type>TableInput</type>
+    <description>Source ADO.NET SSIS -&gt; Table input</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <connection>ICAR SGDM</connection>
+    <sql>SELECT ICARDMS.TAPEDIDOPROV.NUMPEDIDO NUM_COMMANDE_ICAR,
+  ICARDMS.TAPEDIDOPROV.ANOPEDIDO ANNEE,
+  ICARDMS.TAPEDIDOPROV.NUMPEDIDOMARCA NUM_CONSTRUCTEUR
+FROM ICARDMS.TAPEDIDOPROV
+--WHERE ICARDMS.TAPEDIDOPROV.ANOPEDIDO &gt; 2022
+WHERE To_Char(TAPEDIDOPROV.FECHApedido, 'YYYY') = To_Char(SysDate, 'YYYY')</sql>
+    <limit>0</limit>
+    <lookup />
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cached_row_meta_active>N</cached_row_meta_active>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>350</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Table_Num_Cmde_PR_ICAR</name>
+    <type>TableOutput</type>
+    <description>Destination OLE DB SSIS -&gt; Table output (table Table_Num_Cmde_PR_ICAR)</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <connection>10.20.210.165.INFOCENTRE SGDM</connection>
+    <schema />
+    <table>Table_Num_Cmde_PR_ICAR</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field />
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field />
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field />
+    <fields />
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>550</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step_error_handling />
+  <slave-step-copy-partition-distribution />
+  <slave_transformation>N</slave_transformation>
+</transformation>

@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>PR_GVF_SKODA_AUDI</name>
+    <description>Data Flow SSIS 'AUDI' (package PR_GVF_SKODA).</description>
+    <extended_description />
+    <trans_version />
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters>
+      <parameter>
+        <name>SOURCE_DIR</name>
+        <default_value />
+        <description>Repertoire source (a adapter)</description>
+      </parameter>
+    </parameters>
+    <log />
+    <maxdate>
+      <connection />
+      <table />
+      <field />
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file />
+    <capture_step_performance>N</capture_step_performance>
+    <dependencies />
+    <partitionschemas />
+    <slaveservers />
+    <clusterschemas />
+    <created_user>-</created_user>
+    <created_date>2026/01/01 00:00:00.000</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2026/01/01 00:00:00.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Converti automatiquement depuis PR_GVF_SKODA.dtsx (Data Flow 'AUDI'). Verifier dans Spoon.</note>
+      <xloc>20</xloc>
+      <yloc>20</yloc>
+      <width>420</width>
+      <heigth>70</heigth>
+      <fontname>Segoe UI</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>14</fontcolorred>
+      <fontcolorgreen>58</fontcolorgreen>
+      <fontcolorblue>90</fontcolorblue>
+      <backgroundcolorred>201</backgroundcolorred>
+      <backgroundcolorgreen>232</backgroundcolorgreen>
+      <backgroundcolorblue>251</backgroundcolorblue>
+      <bordercolorred>14</bordercolorred>
+      <bordercolorgreen>58</bordercolorgreen>
+      <bordercolorblue>90</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+  </notepads>
+  <order>
+    <hop>
+      <from>AUDI (mapping)</from>
+      <to>AUDI</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>SUPP TIRET ARTICLES</from>
+      <to>Colonne dérivée</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Colonne dérivée</from>
+      <to>Trier</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Conversion de données</from>
+      <to>SUPP TIRET ARTICLES</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Source AUDI 9998</from>
+      <to>Conversion de données</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Trier</from>
+      <to>AUDI (mapping)</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <step>
+    <name>AUDI (mapping)</name>
+    <type>SelectValues</type>
+    <description>Mapping flux -&gt; colonnes du fichier de sortie</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <fields>
+      <field>
+        <name>TYPE_COMMANDE</name>
+        <rename>TYPE_COMMANDE</rename>
+      </field>
+      <field>
+        <name>DEVISE</name>
+        <rename>DEVISE</rename>
+      </field>
+      <field>
+        <name>REFERENCE LIVREE</name>
+        <rename>REFERENCE LIVREE</rename>
+      </field>
+      <field>
+        <name>Copie de Quantité facturée</name>
+        <rename>QTE_LIVREE</rename>
+      </field>
+      <field>
+        <name>PX_ACHAT_UNITAIRE</name>
+        <rename>PX_ACHAT_UNITAIRE</rename>
+      </field>
+      <field>
+        <name>Copie de Créé le</name>
+        <rename>DATE_BL</rename>
+      </field>
+      <field>
+        <name>Copie de N° de Facture</name>
+        <rename>NUMERO_BL</rename>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>150</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>AUDI</name>
+    <type>TextFileOutput</type>
+    <description>Destination fichier plat SSIS -&gt; \\10.10.10.8\societes\SGDM\ICAR\AUDI\PR\Acknow\France\9998.csv</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <separator>;</separator>
+    <enclosure />
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>Y</enclosure_fix_disabled>
+    <header>Y</header>
+    <footer>N</footer>
+    <format>CRLF</format>
+    <compression>None</compression>
+    <encoding>Windows-1252</encoding>
+    <endedLine />
+    <fileNameInField>N</fileNameInField>
+    <fileNameField />
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name>\\10.10.10.8\societes\SGDM\ICAR\AUDI\PR\Acknow\France\9998</name>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>N</do_not_open_new_file_init>
+      <extention>csv</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format />
+      <add_to_result_filenames>Y</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>N</fast_dump>
+      <splitevery>0</splitevery>
+    </file>
+    <fields>
+      <field>
+        <name>NUMERO_BL</name>
+        <type>Integer</type>
+        <format>#</format>
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>DATE_BL</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>8</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>TYPE_COMMANDE</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>REFERENCE LIVREE</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>22</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>QTE_LIVREE</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>7</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>PX_ACHAT_UNITAIRE</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>9</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>DEVISE</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>3</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>320</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Colonne dérivée</name>
+    <type>Formula</type>
+    <description>Colonne derivee SSIS -&gt; Formula (verifier les expressions)</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <formula>
+      <formula>
+        <field_name>REFERENCE LIVREE</field_name>
+        <formula_string>SUBSTITUTE(Article;" ";"")</formula_string>
+        <value_type>String</value_type>
+        <value_length>255</value_length>
+        <value_precision>-1</value_precision>
+        <replace_field />
+      </formula>
+      <formula>
+        <field_name>COMMANDE_FOURNISSEUR</field_name>
+        <formula_string>[Copie de Doc# vente]</formula_string>
+        <value_type>Integer</value_type>
+        <value_length>-1</value_length>
+        <value_precision>-1</value_precision>
+        <replace_field />
+      </formula>
+      <formula>
+        <field_name>PX_ACHAT_UNITAIRE</field_name>
+        <formula_string>SUBSTITUTE((([Valeur unitaire]));",";".")</formula_string>
+        <value_type>String</value_type>
+        <value_length>9</value_length>
+        <value_precision>-1</value_precision>
+        <replace_field />
+      </formula>
+      <formula>
+        <field_name>REFERENCE COMMANDEE</field_name>
+        <formula_string>SUBSTITUTE(Article;" ";"")</formula_string>
+        <value_type>String</value_type>
+        <value_length>255</value_length>
+        <value_precision>-1</value_precision>
+        <replace_field />
+      </formula>
+    </formula>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>350</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Conversion de données</name>
+    <type>SelectValues</type>
+    <description>Conversion de donnees SSIS (typage/renommage)</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <fields>
+      <select_unspecified>N</select_unspecified>
+      <meta>
+        <field>
+          <name>KVPS</name>
+          <rename>Copie de KVPS</rename>
+          <type>Integer</type>
+          <length>-2</length>
+          <precision>-2</precision>
+          <conversion_mask />
+          <date_format_lenient>false</date_format_lenient>
+          <date_format_locale />
+          <date_format_timezone />
+          <lenient_string_to_number>false</lenient_string_to_number>
+          <encoding />
+          <decimal_symbol />
+          <grouping_symbol />
+          <currency_symbol />
+          <storage_type />
+        </field>
+        <field>
+          <name>Doc# vente</name>
+          <rename>Copie de Doc# vente</rename>
+          <type>Integer</type>
+          <length>-2</length>
+          <precision>-2</precision>
+          <conversion_mask />
+          <date_format_lenient>false</date_format_lenient>
+          <date_format_locale />
+          <date_format_timezone />
+          <lenient_string_to_number>false</lenient_string_to_number>
+          <encoding />
+          <decimal_symbol />
+          <grouping_symbol />
+          <currency_symbol />
+          <storage_type />
+        </field>
+        <field>
+          <name>Quantité facturée</name>
+          <rename>Copie de Quantité facturée</rename>
+          <type>Integer</type>
+          <length>-2</length>
+          <precision>-2</precision>
+          <conversion_mask />
+          <date_format_lenient>false</date_format_lenient>
+          <date_format_locale />
+          <date_format_timezone />
+          <lenient_string_to_number>false</lenient_string_to_number>
+          <encoding />
+          <decimal_symbol />
+          <grouping_symbol />
+          <currency_symbol />
+          <storage_type />
+        </field>
+        <field>
+          <name>N° de Facture</name>
+          <rename>Copie de N° de Facture</rename>
+          <type>Integer</type>
+          <length>-2</length>
+          <precision>-2</precision>
+          <conversion_mask />
+          <date_format_lenient>false</date_format_lenient>
+          <date_format_locale />
+          <date_format_timezone />
+          <lenient_string_to_number>false</lenient_string_to_number>
+          <encoding />
+          <decimal_symbol />
+          <grouping_symbol />
+          <currency_symbol />
+          <storage_type />
+        </field>
+        <field>
+          <name>Créé le</name>
+          <rename>Copie de Créé le</rename>
+          <type>String</type>
+          <length>8</length>
+          <precision>-2</precision>
+          <conversion_mask />
+          <date_format_lenient>false</date_format_lenient>
+          <date_format_locale />
+          <date_format_timezone />
+          <lenient_string_to_number>false</lenient_string_to_number>
+          <encoding />
+          <decimal_symbol />
+          <grouping_symbol />
+          <currency_symbol />
+          <storage_type />
+        </field>
+        <field>
+          <name>Valeur unitaire</name>
+          <rename>Copie de Valeur unitaire</rename>
+          <type>String</type>
+          <length>50</length>
+          <precision>-2</precision>
+          <conversion_mask />
+          <date_format_lenient>false</date_format_lenient>
+          <date_format_locale />
+          <date_format_timezone />
+          <lenient_string_to_number>false</lenient_string_to_number>
+          <encoding />
+          <decimal_symbol />
+          <grouping_symbol />
+          <currency_symbol />
+          <storage_type />
+        </field>
+      </meta>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>550</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Source AUDI 9998</name>
+    <type>ExcelInput</type>
+    <description>Source Excel SSIS -&gt; C:\fichiers\ACKNOW\PR\GVF\Source\9998.xls</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <header>Y</header>
+    <noempty>Y</noempty>
+    <stoponempty>N</stoponempty>
+    <filefield />
+    <sheetfield />
+    <sheetrowsfield />
+    <rownumfield />
+    <sheetfield_len>0</sheetfield_len>
+    <filefield_len>0</filefield_len>
+    <limit>0</limit>
+    <encoding />
+    <add_to_result_filenames>Y</add_to_result_filenames>
+    <accept_filenames>N</accept_filenames>
+    <accept_field />
+    <accept_stepname />
+    <file>
+      <name>C:\fichiers\ACKNOW\PR\GVF\Source\9998.xls</name>
+      <filemask />
+      <exclude_filemask />
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>KVPS</name>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+      <field>
+        <name>Créé le</name>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+      <field>
+        <name>Doc# vente</name>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+      <field>
+        <name>Article</name>
+        <type>String</type>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+      <field>
+        <name>Désignation</name>
+        <type>String</type>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+      <field>
+        <name>Quantité facturée</name>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+      <field>
+        <name>Valeur unitaire</name>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+      <field>
+        <name>N° de Facture</name>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+      </field>
+    </fields>
+    <sheets>
+      <sheet>
+        <name>Base</name>
+        <startrow>0</startrow>
+        <startcol>0</startcol>
+      </sheet>
+    </sheets>
+    <strict_types>N</strict_types>
+    <error_ignored>N</error_ignored>
+    <error_line_skipped>N</error_line_skipped>
+    <spreadsheet_type>JXL</spreadsheet_type>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>750</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>SUPP TIRET ARTICLES</name>
+    <type>Formula</type>
+    <description>Colonne derivee SSIS -&gt; Formula (verifier les expressions)</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <formula>
+      <formula>
+        <field_name>TYPE_COMMANDE</field_name>
+        <formula_string>"A"</formula_string>
+        <value_type>String</value_type>
+        <value_length>1</value_length>
+        <value_precision>-1</value_precision>
+        <replace_field />
+      </formula>
+      <formula>
+        <field_name>DEVISE</field_name>
+        <formula_string>"EUR"</formula_string>
+        <value_type>String</value_type>
+        <value_length>3</value_length>
+        <value_precision>-1</value_precision>
+        <replace_field />
+      </formula>
+      <formula>
+        <field_name>DATE_BL</field_name>
+        <formula_string>MID([Copie de Créé le];7;2) + MID([Copie de Créé le];5;2) + MID([Copie de Créé le];1;4)</formula_string>
+        <value_type>String</value_type>
+        <value_length>8</value_length>
+        <value_precision>-1</value_precision>
+        <replace_field />
+      </formula>
+    </formula>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>950</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Trier</name>
+    <type>SortRows</type>
+    <description>Tri SSIS</description>
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <sort_size>1000000</sort_size>
+    <free_memory />
+    <compress>N</compress>
+    <compress_variable />
+    <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>Copie de N° de Facture</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input />
+      <output />
+    </remotesteps>
+    <GUI>
+      <xloc>1150</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step_error_handling />
+  <slave-step-copy-partition-distribution />
+  <slave_transformation>N</slave_transformation>
+</transformation>

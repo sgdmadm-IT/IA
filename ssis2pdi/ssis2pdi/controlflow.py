@@ -1,5 +1,8 @@
 """Conversion du Control Flow SSIS (executables + contraintes) en job PDI."""
+import re
+
 from . import pdi
+from . import db
 from .common import sanitize_filename
 
 
@@ -68,6 +71,42 @@ def build_entry(ex, package, x, ktr_name=None, notes=None):
         notes.append(f"[{ex.name}] File System Task '{op}' non gere -> Dummy")
         return pdi.entry_wrap(ex.name, "DUMMY", [], x, 64,
                               f"NON CONVERTI : File System Task {op}")
+
+    if t == "Microsoft.ExecuteSQLTask":
+        std = ex.element.find("./ObjectData/SqlTaskData")
+        sql = std.get("SqlStatementSource", "") if std is not None else ""
+        conn = package.conn_by_dtsid.get((std.get("Connection", "") if std is not None else "").strip("{}"))
+        cname = conn.name if conn else ""
+        if conn:
+            notes.append(f"[{ex.name}] entree SQL sur la connexion '{cname}' : "
+                         "renseigner les identifiants dans Spoon")
+        return pdi.entry_wrap(ex.name, "SQL", [
+            ("sql", sql), ("useVariableSubstitution", "F"),
+            ("sqlfromfile", "F"), ("sqlfilename", None),
+            ("sendOneStatement", "F"), ("connection", cname),
+        ], x, 64, "Execute SQL Task SSIS")
+
+    if t == "Microsoft.SendMailTask":
+        smd = ex.element.find("./ObjectData/SendMailTaskData")
+        smtp_conn = package.conn_by_dtsid.get((smd.get("SMTPServer", "") if smd is not None else "").strip("{}"))
+        server = ""
+        if smtp_conn:
+            m = re.search(r"SmtpServer=([^;]+)", smtp_conn.conn_string, re.IGNORECASE)
+            server = m.group(1) if m else smtp_conn.conn_string
+        g = smd.get if smd is not None else (lambda *_: "")
+        notes.append(f"[{ex.name}] tache d'envoi de mail convertie (verifier le serveur SMTP)")
+        return pdi.entry_wrap(ex.name, "MAIL", [
+            ("server", server), ("port", "25"),
+            ("destination", g("To", "")), ("destinationCc", g("CC", "")),
+            ("destinationBCc", g("BCC", "")),
+            ("replyto", g("From", "")), ("replyToName", None),
+            ("subject", g("Subject", "")),
+            ("include_date", "N"), ("contact_person", None),
+            ("contact_phone", None), ("comment", g("MessageSource", "")),
+            ("encoding", "UTF-8"), ("priority", "normal"),
+            ("importance", "normal"), ("sensitivity", "normal"),
+            ("useAuth", "N"), ("usexoauth2", "N"), ("useSecAuth", "N"),
+        ], x, 64, "Send Mail Task SSIS")
 
     if t == "Microsoft.ScriptTask":
         lang = ""
@@ -168,9 +207,21 @@ def build_job(package, ktr_names):
         if disabled.get(ex.refid):
             hops.append(("START", ex.name, False, True, True))
 
+    # connexions BD referencees par des taches Execute SQL
+    db_conns = {}
+    for ex in package.executables:
+        if ex.exec_type == "Microsoft.ExecuteSQLTask":
+            std = ex.element.find("./ObjectData/SqlTaskData")
+            conn = package.conn_by_dtsid.get(
+                (std.get("Connection", "") if std is not None else "").strip("{}"))
+            if conn:
+                meta = db.parse_db(conn)
+                db_conns[meta["name"]] = meta
+    connections = [db.build_connection_element(m) for m in db_conns.values()]
+
     params = [{"name": "BASE_DIR", "default": "",
                "desc": "Repertoire de base (a adapter a l'environnement)"}]
     job = pdi.build_job(package.name,
                         f"Control Flow SSIS du package {package.name}.",
-                        entries, hops, params=params)
+                        entries, hops, params=params, connections=connections)
     return job, notes

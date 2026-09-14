@@ -14,7 +14,9 @@ from . import pdi
 
 def convert_package(path, out_dir):
     pkg = parse_dtsx(path)
-    pkg_dir = os.path.join(out_dir, sanitize_filename(pkg.name))
+    # dossier/base de nom bases sur le NOM DE FICHIER (unique), pas l'ObjectName
+    stem = os.path.splitext(os.path.basename(path))[0]
+    pkg_dir = os.path.join(out_dir, sanitize_filename(stem))
     os.makedirs(pkg_dir, exist_ok=True)
     written, notes = [], []
 
@@ -22,7 +24,7 @@ def convert_package(path, out_dir):
     single = len(pipelines) == 1
     ktr_names = {}
     for pl in pipelines:
-        base = pkg.name if single else f"{pkg.name}_{pl.name}"
+        base = stem if single else f"{stem}_{pl.name}"
         fname = sanitize_filename(base) + ".ktr"
         ktr_names[pl.refid] = fname
         try:
@@ -36,7 +38,7 @@ def convert_package(path, out_dir):
 
     try:
         job, jnotes = build_job(pkg, ktr_names)
-        jname = sanitize_filename(pkg.name) + ".kjb"
+        jname = sanitize_filename(stem) + ".kjb"
         with open(os.path.join(pkg_dir, jname), "w", encoding="utf-8") as fh:
             fh.write(pdi.to_string(job))
         written.append(jname)
@@ -45,7 +47,7 @@ def convert_package(path, out_dir):
         notes.append(f"ERREUR sur le job : {exc}")
 
     _write_report(pkg_dir, pkg, written, notes)
-    return pkg, written, notes
+    return pkg, written, notes, stem
 
 
 def _write_report(pkg_dir, pkg, written, notes):
@@ -91,15 +93,15 @@ def main(argv=None):
     os.makedirs(args.out, exist_ok=True)
     summary = ["# Synthese de conversion SSIS -> PDI", "",
                f"{len(packages)} package(s) traite(s).", "",
-               "| Package | Fichiers generes | Points a verifier |",
-               "|---------|------------------|-------------------|"]
+               "| Fichier source | Package (ObjectName) | Fichiers generes | Points a verifier |",
+               "|----------------|----------------------|------------------|-------------------|"]
     total_notes = 0
     for p in packages:
         try:
-            pkg, written, notes = convert_package(p, args.out)
+            pkg, written, notes, stem = convert_package(p, args.out)
             total_notes += len(notes)
-            summary.append(f"| {pkg.name} | {len(written)} | {len(notes)} |")
-            print(f"OK  {pkg.name}  ({len(written)} fichiers, {len(notes)} notes)")
+            summary.append(f"| {stem}.dtsx | {pkg.name} | {len(written)} | {len(notes)} |")
+            print(f"OK  {stem}  ({len(written)} fichiers, {len(notes)} notes)")
         except Exception as exc:  # noqa: BLE001
             summary.append(f"| {os.path.basename(p)} | ERREUR | {exc} |")
             print(f"ERREUR  {p} : {exc}", file=sys.stderr)

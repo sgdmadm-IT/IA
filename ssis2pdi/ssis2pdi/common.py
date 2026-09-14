@@ -52,8 +52,9 @@ def unescape_dts(value):
 
 
 def sanitize_filename(name):
-    name = re.sub(r"[^\w\-. ]+", "_", name, flags=re.UNICODE)
-    return name.strip().strip(".") or "package"
+    name = re.sub(r"\s+", "_", (name or "").strip())
+    name = re.sub(r"[^\w\-.]+", "_", name, flags=re.UNICODE)
+    return name.strip("._") or "package"
 
 
 # --------------------------------------------------------------------------
