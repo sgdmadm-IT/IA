@@ -78,7 +78,12 @@ def main(argv=None):
     ap.add_argument("--version", action="version", version=f"ssis2pdi {__version__}")
     args = ap.parse_args(argv)
 
-    packages = find_packages(args.input)
+    packages, missing = find_packages(args.input)
+    if missing:
+        print("Packages declares dans le projet mais introuvables (a fournir) :",
+              file=sys.stderr)
+        for m in missing:
+            print(f"  - {m}", file=sys.stderr)
     if not packages:
         print("Aucun fichier .dtsx trouve.", file=sys.stderr)
         return 1
@@ -100,6 +105,9 @@ def main(argv=None):
             print(f"ERREUR  {p} : {exc}", file=sys.stderr)
             traceback.print_exc()
 
+    if missing:
+        summary += ["", "## Packages manquants (declares dans le .dtproj, fichiers absents)", ""]
+        summary += [f"- `{m}`" for m in missing]
     summary += ["", f"Total des points a verifier : **{total_notes}**.", ""]
     with open(os.path.join(args.out, "SYNTHESE.md"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(summary))

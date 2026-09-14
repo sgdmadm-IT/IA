@@ -155,20 +155,48 @@ def parse_dtsx(path):
     return pkg
 
 
+def read_dtproj_manifest(path):
+    """Retourne la liste ordonnee des noms de packages (*.dtsx) declares dans un .dtproj."""
+    root = _strip_ns(ET.parse(path).getroot())
+    names = [p.get("Name") for p in root.iter("Package") if p.get("Name")]
+    if not names:  # repli : parcours texte si la structure differe
+        import re as _re
+        names = _re.findall(r'Package\s+SSIS:Name="([^"]+\.dtsx)"',
+                            open(path, encoding="utf-8", errors="ignore").read())
+    # dedoublonne en conservant l'ordre
+    seen, ordered = set(), []
+    for n in names:
+        if n not in seen:
+            seen.add(n)
+            ordered.append(n)
+    return ordered
+
+
 def find_packages(input_path):
-    """Retourne la liste des .dtsx a convertir (fichier, dossier ou .dtproj)."""
+    """Retourne (packages_trouves, packages_manquants).
+
+    Accepte un fichier .dtsx, un projet .dtproj ou un dossier.
+    Pour un .dtproj, la liste attendue vient du manifeste ; les .dtsx doivent
+    se trouver dans le meme dossier."""
     if os.path.isfile(input_path):
         if input_path.lower().endswith(".dtsx"):
-            return [input_path]
+            return [input_path], []
         if input_path.lower().endswith(".dtproj"):
             base = os.path.dirname(os.path.abspath(input_path))
-            return sorted(
-                os.path.join(base, f) for f in os.listdir(base)
-                if f.lower().endswith(".dtsx"))
+            found, missing = [], []
+            for name in read_dtproj_manifest(input_path):
+                cand = os.path.join(base, name)
+                (found if os.path.isfile(cand) else missing).append(cand)
+            # inclut aussi d'eventuels .dtsx presents mais non listes
+            for f in sorted(os.listdir(base)):
+                p = os.path.join(base, f)
+                if f.lower().endswith(".dtsx") and p not in found:
+                    found.append(p)
+            return found, [os.path.basename(m) for m in missing]
         raise ValueError(f"Type de fichier non gere : {input_path}")
     result = []
     for dirpath, _dirs, files in os.walk(input_path):
         for f in files:
             if f.lower().endswith(".dtsx"):
                 result.append(os.path.join(dirpath, f))
-    return sorted(result)
+    return sorted(result), []
