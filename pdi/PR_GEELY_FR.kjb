@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job>
+  <name>PR_GEELY_FR</name>
+  <description>Conversion du Control Flow SSIS PR_GEELY_FR.dtsx.
+START -&gt; (test presence : desactive dans le package d'origine) -&gt; transfo BYD -&gt; deplacement byd.csv vers ICOM SEAT -&gt; suppression du xls source SEAT.</description>
+  <extended_description/>
+  <job_version/>
+  <directory>/</directory>
+  <created_user>-</created_user>
+  <created_date>2026/09/14 00:00:00.000</created_date>
+  <modified_user>-</modified_user>
+  <modified_date>2026/09/14 00:00:00.000</modified_date>
+  <parameters>
+    <parameter>
+      <name>DEST_CSV</name>
+      <default_value>\\10.10.10.8\SGDM\ICAR\BYD\PR\Acknow\France\byd.csv</default_value>
+      <description>CSV produit par la transformation</description>
+    </parameter>
+    <parameter>
+      <name>ICOM_SEAT_CSV</name>
+      <default_value>\\10.10.10.8\societes\SGDM\ICAR\SEAT\PR\Acknow\France\A INTEGRER\498.csv</default_value>
+      <description>Cible I'COM SEAT (repris tel quel du package d'origine)</description>
+    </parameter>
+    <parameter>
+      <name>XLS_SOURCE_SEAT</name>
+      <default_value>C:\fichiers\ACKNOW\PR\GVF\Source\498.xls</default_value>
+      <description>Fichier source supprime en fin de traitement (repris tel quel du package d'origine)</description>
+    </parameter>
+  </parameters>
+  <slaveservers/>
+  <job-log-table>
+    <connection/>
+    <schema/>
+    <table/>
+    <size_limit_lines/>
+    <interval/>
+    <timeout_days/>
+  </job-log-table>
+  <jobentries>
+    <entry>
+      <name>START</name>
+      <description/>
+      <type>SPECIAL</type>
+      <start>Y</start>
+      <dummy>N</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <intervalSeconds>0</intervalSeconds>
+      <intervalMinutes>60</intervalMinutes>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>64</xloc>
+      <yloc>64</yloc>
+    </entry>
+    <entry>
+      <name>Test presence BYD.xls (desactive)</name>
+      <description>Equivalent de la Script Task "Test presence du fichier SEAT", DESACTIVEE dans le package d'origine. Le hop est desactive pour reproduire ce comportement (la transfo tourne toujours).</description>
+      <type>FILE_EXISTS</type>
+      <filename>C:\fichiers\ACKNOW\PR\GVF\Source\BYD.xls</filename>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>64</xloc>
+      <yloc>176</yloc>
+    </entry>
+    <entry>
+      <name>Transfo BYD</name>
+      <description>Data Flow "BYD" : BYD.xls -&gt; byd.csv</description>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/PR_GEELY_FR.ktr</filename>
+      <transname/>
+      <directory/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <run_configuration/>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>240</xloc>
+      <yloc>64</yloc>
+    </entry>
+    <entry>
+      <name>Copie vers ICOM SEAT</name>
+      <description>Equivalent File System Task "Copie ... I'COM SEAT" (MoveFile). Deplace byd.csv vers la cible I'COM.</description>
+      <type>MOVE_FILES</type>
+      <move_empty_folders>Y</move_empty_folders>
+      <arg_from_previous>N</arg_from_previous>
+      <include_subfolders>N</include_subfolders>
+      <add_result_filesname>N</add_result_filesname>
+      <destination_is_a_file>Y</destination_is_a_file>
+      <create_destination_folder>N</create_destination_folder>
+      <create_move_to_folder>N</create_move_to_folder>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <AddDateBeforeExtension>N</AddDateBeforeExtension>
+      <DoNotKeepFolderStructure>N</DoNotKeepFolderStructure>
+      <iffileexists>overwrite_file</iffileexists>
+      <destinationFolder/>
+      <ifmovedfileexists>do_nothing</ifmovedfileexists>
+      <moved_date_time_format/>
+      <AddMovedDateBeforeExtension>N</AddMovedDateBeforeExtension>
+      <add_moved_date>N</add_moved_date>
+      <add_moved_time>N</add_moved_time>
+      <SpecifyMoveFormat>N</SpecifyMoveFormat>
+      <create_move_to_folder>N</create_move_to_folder>
+      <simulate>N</simulate>
+      <fields>
+        <field>
+          <source_filefolder>${DEST_CSV}</source_filefolder>
+          <destination_filefolder>${ICOM_SEAT_CSV}</destination_filefolder>
+          <wildcard/>
+        </field>
+      </fields>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>416</xloc>
+      <yloc>64</yloc>
+    </entry>
+    <entry>
+      <name>Suppression 498.xls source</name>
+      <description>Equivalent File System Task "Suppression ... SEAT" (DeleteFile). Repris tel quel du package d'origine (cible SEAT, incoherence heritee du modele).</description>
+      <type>DELETE_FILES</type>
+      <arg_from_previous>N</arg_from_previous>
+      <include_subfolders>N</include_subfolders>
+      <fields>
+        <field>
+          <name>${XLS_SOURCE_SEAT}</name>
+          <filemask/>
+        </field>
+      </fields>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>64</yloc>
+    </entry>
+  </jobentries>
+  <hops>
+    <hop>
+      <from>START</from>
+      <to>Transfo BYD</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>Test presence BYD.xls (desactive)</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Transfo BYD</from>
+      <to>Copie vers ICOM SEAT</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Copie vers ICOM SEAT</from>
+      <to>Suppression 498.xls source</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+  </hops>
+  <notepads/>
+  <attributes/>
+</job>
